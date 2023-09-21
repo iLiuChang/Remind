@@ -13,6 +13,8 @@ public class RemindManager: NSObject {
         public var font = UIFont.systemFont(ofSize: 13)
         public var maximumStayTime: TimeInterval = 10
         public var minimumStayTime: TimeInterval = 2
+        public var backgroundColor = UIColor(red:0, green:0, blue:0, alpha: 0.8)
+        public var textColor = UIColor.white
     }
     
     @discardableResult
@@ -23,7 +25,7 @@ public class RemindManager: NSObject {
         
         let mainView = UIView()
         mainView.layer.cornerRadius = 12
-        mainView.backgroundColor = UIColor(red:0, green:0, blue:0, alpha: 0.8)
+        mainView.backgroundColor = config.backgroundColor
         
         let imageW: CGFloat = 36
         let padding: CGFloat = 30
@@ -38,7 +40,7 @@ public class RemindManager: NSObject {
             label.numberOfLines = 0
             label.font = config.font
             label.textAlignment = .center
-            label.textColor = UIColor.white
+            label.textColor = config.textColor
             let size = label.sizeThatFits(CGSize(width: UIScreen.main.bounds.width-82, height: CGFloat.greatestFiniteMagnitude))
             label.frame = CGRect(x: padding, y: imageW + padding + 10, width: max(size.width, imageW), height: size.height)
             mainView.addSubview(label)
@@ -71,14 +73,14 @@ public class RemindManager: NSObject {
     public class func show(text: String, stay time: TimeInterval = 0, in view: UIView) -> UIView {
         let mainView = UIView()
         mainView.layer.cornerRadius = 12
-        mainView.backgroundColor = UIColor(red:0, green:0, blue:0, alpha: 0.8)
+        mainView.backgroundColor = config.backgroundColor
         
         let label = UILabel()
         label.text = text
         label.numberOfLines = 0
         label.font = config.font
         label.textAlignment = NSTextAlignment.center
-        label.textColor = UIColor.white
+        label.textColor = config.textColor
         let size = label.sizeThatFits(CGSize(width: UIScreen.main.bounds.width-82, height: CGFloat.greatestFiniteMagnitude))
         label.bounds = CGRect(x: 0, y: 0, width: size.width, height: size.height)
         mainView.addSubview(label)
@@ -97,7 +99,7 @@ public class RemindManager: NSObject {
     public class func show(type: RemindImage.ImageType, text: String, stay time: TimeInterval = 0, in view: UIView) -> UIView {
         let mainView = UIView()
         mainView.layer.cornerRadius = 10
-        mainView.backgroundColor = UIColor(red:0, green:0, blue:0, alpha: 0.8)
+        mainView.backgroundColor = config.backgroundColor
         let iconView = UIImageView(image: type.image)
         iconView.frame = CGRect(x: 0, y: 15, width: 36, height: 36)
         mainView.addSubview(iconView)
@@ -107,7 +109,7 @@ public class RemindManager: NSObject {
         label.numberOfLines = 0
         label.font = config.font
         label.textAlignment = .center
-        label.textColor = UIColor.white
+        label.textColor = config.textColor
         let size = label.sizeThatFits(CGSize(width: UIScreen.main.bounds.width-82, height: CGFloat.greatestFiniteMagnitude))
         label.frame = CGRect(x: 20, y: iconView.frame.maxY + 10, width: max(size.width, iconView.frame.size.width), height: size.height)
         mainView.addSubview(label)

@@ -8,10 +8,13 @@
 import UIKit
 
 public class RemindImage {
+    
+    public static var color = UIColor.white
+    
     public struct Cache {
-        static var success: UIImage?
-        static var error: UIImage?
-        static var info: UIImage?
+        public static var success: UIImage?
+        public static var error: UIImage?
+        public static var info: UIImage?
     }
     
     public enum ImageType{
@@ -54,18 +57,18 @@ public class RemindImage {
             checkmarkShapePath.addLine(to: CGPoint(x: 18, y: 21))
             checkmarkShapePath.close()
             
-            UIColor.white.setStroke()
+            RemindImage.color.setStroke()
             checkmarkShapePath.stroke()
             
             let checkmarkShapePath = UIBezierPath()
             checkmarkShapePath.addArc(withCenter: CGPoint(x: 18, y: 26), radius: 1, startAngle: 0, endAngle: CGFloat(Double.pi*2), clockwise: true)
             checkmarkShapePath.close()
             
-            UIColor.white.setFill()
+            RemindImage.color.setFill()
             checkmarkShapePath.fill()
         }
         
-        UIColor.white.setStroke()
+        RemindImage.color.setStroke()
         checkmarkShapePath.stroke()
     }
     class var successImage: UIImage {

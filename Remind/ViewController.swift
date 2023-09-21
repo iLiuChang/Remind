@@ -12,12 +12,16 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        
+        RemindImage.color = .yellow
+        RemindManager.config.backgroundColor = .gray
+        RemindManager.config.textColor = .red
         // Do any additional setup after loading the view.
     }
 
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        view.rmd.showInfo("info")
+        view.rmd.showSuccess("info")
     }
 }
 
