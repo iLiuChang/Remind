@@ -15,24 +15,44 @@ public class RemindManager: NSObject {
         public var minimumStayTime: TimeInterval = 2
         public var backgroundColor = UIColor(red:0, green:0, blue:0, alpha: 0.8)
         public var textColor = UIColor.white
+        public var padding: CGFloat = 20
+        public var activityIndicatorColor: UIColor = .white
+
     }
     
     @discardableResult
     public class func wait(text: String?, in view: UIView) -> UIView {
         
-        let bgView = UIView(frame: view.bounds)
+        let bgView = UIView()
+        bgView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(bgView)
+        NSLayoutConstraint.activate([
+            bgView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            bgView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            bgView.topAnchor.constraint(equalTo: view.topAnchor),
+            bgView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
         
         let mainView = UIView()
         mainView.layer.cornerRadius = 12
         mainView.backgroundColor = config.backgroundColor
-        
-        let imageW: CGFloat = 36
-        let padding: CGFloat = 30
-        let checkmarkView = UIActivityIndicatorView(style: .whiteLarge)
-        checkmarkView.frame = CGRect(x: padding, y: padding, width: imageW, height: imageW)
-        checkmarkView.startAnimating()
-        mainView.addSubview(checkmarkView)
+        mainView.translatesAutoresizingMaskIntoConstraints = false
+        bgView.addSubview(mainView)
+
+        var activityIndicator: UIActivityIndicatorView!
+        if #available(iOS 13.0, *) {
+            activityIndicator = UIActivityIndicatorView(style: .large)
+        } else {
+            activityIndicator = UIActivityIndicatorView(style: .whiteLarge)
+        }
+        activityIndicator.color = config.activityIndicatorColor
+        activityIndicator.startAnimating()
+        mainView.addSubview(activityIndicator)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            activityIndicator.topAnchor.constraint(equalTo: mainView.topAnchor, constant: config.padding),
+            activityIndicator.centerXAnchor.constraint(equalTo: mainView.centerXAnchor)
+        ])
 
         if let bottomText = text, !bottomText.isEmpty {
             let label = UILabel()
@@ -41,26 +61,33 @@ public class RemindManager: NSObject {
             label.font = config.font
             label.textAlignment = .center
             label.textColor = config.textColor
-            let size = label.sizeThatFits(CGSize(width: UIScreen.main.bounds.width-82, height: CGFloat.greatestFiniteMagnitude))
-            label.frame = CGRect(x: padding, y: imageW + padding + 10, width: max(size.width, imageW), height: size.height)
             mainView.addSubview(label)
-            
-            let frame = CGRect(x: 0, y: 0, width: label.frame.width + label.frame.origin.x * 2, height: label.frame.maxY + padding)
-            var imageFrame = checkmarkView.frame
-            imageFrame.origin.x = (frame.width - imageFrame.size.width) / 2
-            checkmarkView.frame = imageFrame
-            mainView.frame = frame
-            
-            mainView.center = view.center
+            label.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                label.topAnchor.constraint(equalTo: activityIndicator.bottomAnchor, constant: 10),
+                label.centerXAnchor.constraint(equalTo: activityIndicator.centerXAnchor),
+                label.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -config.padding),
+                label.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: config.padding),
+                label.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -config.padding),
+
+            ])
             view.addSubview(mainView)
 
+            NSLayoutConstraint.activate([
+                mainView.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, constant: -80),
+                mainView.widthAnchor.constraint(greaterThanOrEqualTo: mainView.heightAnchor)
+            ])
         } else {
-            let frame = CGRect(x: 0, y: 0, width: imageW + padding*2, height: imageW + padding*2)
-            mainView.frame = frame
-            mainView.center = view.center
+            NSLayoutConstraint.activate([
+                mainView.widthAnchor.constraint(equalTo: activityIndicator.widthAnchor, constant: config.padding*2),
+                mainView.heightAnchor.constraint(equalTo: activityIndicator.heightAnchor, constant: config.padding*2),
+            ])
         }
 
-        bgView.addSubview(mainView)
+        NSLayoutConstraint.activate([
+            mainView.centerXAnchor.constraint(equalTo: bgView.centerXAnchor),
+            mainView.centerYAnchor.constraint(equalTo: bgView.centerYAnchor),
+        ])
 
         bgView.alpha = 0.0
         UIView.animate(withDuration: 0.2, animations: {
@@ -74,24 +101,33 @@ public class RemindManager: NSObject {
         let mainView = UIView()
         mainView.layer.cornerRadius = 12
         mainView.backgroundColor = config.backgroundColor
-        
+        view.addSubview(mainView)
+        mainView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            mainView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            mainView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            mainView.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, constant: -80)
+        ])
+
         let label = UILabel()
         label.text = text
         label.numberOfLines = 0
         label.font = config.font
         label.textAlignment = NSTextAlignment.center
         label.textColor = config.textColor
-        let size = label.sizeThatFits(CGSize(width: UIScreen.main.bounds.width-82, height: CGFloat.greatestFiniteMagnitude))
-        label.bounds = CGRect(x: 0, y: 0, width: size.width, height: size.height)
         mainView.addSubview(label)
-        
-        let superFrame = CGRect(x: 0, y: 0, width: label.frame.width + 40 , height: label.frame.height + 30)
-        mainView.frame = superFrame
-        
-        label.center = mainView.center
-        mainView.center = view.center
-        view.addSubview(mainView)
-        self.perform(#selector(dismiss(sender:)), with: mainView, afterDelay: makeTime(text, time: time))
+        label.translatesAutoresizingMaskIntoConstraints = false
+        let padding: CGFloat = 15
+        NSLayoutConstraint.activate([
+            label.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -padding),
+            label.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: padding),
+            label.topAnchor.constraint(equalTo: mainView.topAnchor, constant: padding),
+            label.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -padding)
+        ])
+
+        if time >= 0 {
+            self.perform(#selector(dismiss(sender:)), with: mainView, afterDelay: makeTime(text, time: time))
+        }
         return mainView
     }
     
@@ -100,9 +136,24 @@ public class RemindManager: NSObject {
         let mainView = UIView()
         mainView.layer.cornerRadius = 10
         mainView.backgroundColor = config.backgroundColor
+        view.addSubview(mainView)
+        mainView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            mainView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            mainView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            mainView.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, constant: -80),
+            mainView.widthAnchor.constraint(greaterThanOrEqualTo: mainView.heightAnchor)
+        ])
+
         let iconView = UIImageView(image: type.image)
-        iconView.frame = CGRect(x: 0, y: 15, width: 36, height: 36)
         mainView.addSubview(iconView)
+        iconView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            iconView.centerXAnchor.constraint(equalTo: mainView.centerXAnchor),
+            iconView.topAnchor.constraint(equalTo: mainView.topAnchor, constant: config.padding),
+            iconView.widthAnchor.constraint(equalToConstant: 36),
+            iconView.heightAnchor.constraint(equalToConstant: 36)
+        ])
         
         let label = UILabel()
         label.text = text
@@ -110,25 +161,25 @@ public class RemindManager: NSObject {
         label.font = config.font
         label.textAlignment = .center
         label.textColor = config.textColor
-        let size = label.sizeThatFits(CGSize(width: UIScreen.main.bounds.width-82, height: CGFloat.greatestFiniteMagnitude))
-        label.frame = CGRect(x: 20, y: iconView.frame.maxY + 10, width: max(size.width, iconView.frame.size.width), height: size.height)
         mainView.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: iconView.bottomAnchor, constant: 10),
+            label.centerXAnchor.constraint(equalTo: mainView.centerXAnchor),
+            label.bottomAnchor.constraint(equalTo: mainView.bottomAnchor, constant: -config.padding),
+            label.leadingAnchor.constraint(equalTo: mainView.leadingAnchor, constant: config.padding),
+            label.trailingAnchor.constraint(equalTo: mainView.trailingAnchor, constant: -config.padding)
+        ])
         
-        let frame = CGRect(x: 0, y: 0, width: label.frame.width + label.frame.origin.x * 2, height: label.frame.maxY + 15)
-        var imageFrame = iconView.frame
-        imageFrame.origin.x = (frame.width - imageFrame.size.width) / 2
-        iconView.frame = imageFrame
-        mainView.frame = frame
-        
-        mainView.center = view.center
-        view.addSubview(mainView)
-        
+
         mainView.alpha = 0.0
         UIView.animate(withDuration: 0.2, animations: {
             mainView.alpha = 1
         })
         
-        self.perform(#selector(dismiss(sender:)), with: mainView, afterDelay: makeTime(text, time: time))
+        if time >= 0 {
+            self.perform(#selector(dismiss(sender:)), with: mainView, afterDelay: makeTime(text, time: time))
+        }
         return mainView
     }
     
