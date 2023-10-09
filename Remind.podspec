@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "Remind"
-  s.version      = "1.2.0"
+  s.version      = "1.3.0"
   s.summary      = "Simple swift toast notifications"
   s.homepage     = "https://github.com/iLiuChang/Remind"
   s.license      = "MIT"
