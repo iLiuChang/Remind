@@ -53,19 +53,15 @@ public class RemindImage {
             checkmarkShapePath.addLine(to: CGPoint(x: 24, y: 12))
             checkmarkShapePath.close()
         case .info:
-            checkmarkShapePath.move(to: CGPoint(x: 18, y: 10))
-            checkmarkShapePath.addLine(to: CGPoint(x: 18, y: 21))
-            checkmarkShapePath.close()
-            
-            RemindImage.color.setStroke()
-            checkmarkShapePath.stroke()
-            
-            let checkmarkShapePath = UIBezierPath()
-            checkmarkShapePath.addArc(withCenter: CGPoint(x: 18, y: 26), radius: 1, startAngle: 0, endAngle: CGFloat(Double.pi*2), clockwise: true)
-            checkmarkShapePath.close()
-            
+            let point = UIBezierPath()
+            point.addArc(withCenter: CGPoint(x: 18, y: 10), radius: 1, startAngle: 0, endAngle: CGFloat(Double.pi*2), clockwise: true)
+            point.close()
             RemindImage.color.setFill()
-            checkmarkShapePath.fill()
+            point.fill()
+            
+            checkmarkShapePath.move(to: CGPoint(x: 18, y: 15))
+            checkmarkShapePath.addLine(to: CGPoint(x: 18, y: 27))
+            checkmarkShapePath.close()
         }
         
         RemindImage.color.setStroke()
@@ -75,20 +71,18 @@ public class RemindImage {
         if (Cache.success != nil) {
             return Cache.success!
         }
-        UIGraphicsBeginImageContextWithOptions(CGSize(width: 36, height: 36), false, 0)
-        draw(.success)
-        Cache.success = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
+        Cache.success = UIGraphicsImageRenderer(size: CGSize(width: 36, height: 36)).image { _ in
+            draw(.success)
+        }
         return Cache.success!
     }
     class var errorImage: UIImage {
         if (Cache.error != nil) {
             return Cache.error!
         }
-        UIGraphicsBeginImageContextWithOptions(CGSize(width: 36, height: 36), false, 0)
-        draw(.error)
-        Cache.error = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
+        Cache.error = UIGraphicsImageRenderer(size: CGSize(width: 36, height: 36)).image { _ in
+            draw(.error)
+        }
         return Cache.error!
     }
     
@@ -96,10 +90,9 @@ public class RemindImage {
         if (Cache.info != nil) {
             return Cache.info!
         }
-        UIGraphicsBeginImageContextWithOptions(CGSize(width: 36, height: 36), false, 0)
-        draw(.info)
-        Cache.info = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
+        Cache.info = UIGraphicsImageRenderer(size: CGSize(width: 36, height: 36)).image { _ in
+            draw(.info)
+        }
         return Cache.info!
     }
 }
